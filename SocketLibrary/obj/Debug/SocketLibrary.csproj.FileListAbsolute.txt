@@ -1,0 +1,10 @@
+E:\SocketLibrary\SocketLibrary\bin\Debug\SocketLibrary.dll
+E:\SocketLibrary\SocketLibrary\bin\Debug\SocketLibrary.pdb
+E:\SocketLibrary\SocketLibrary\obj\Debug\SocketLibrary.dll
+E:\SocketLibrary\SocketLibrary\obj\Debug\SocketLibrary.pdb
+E:\SocketLibrary\SocketLibrary\obj\Debug\SocketLibrary.csprojResolveAssemblyReference.cache
+E:\Socket\SocketLibrary\bin\Debug\SocketLibrary.dll
+E:\Socket\SocketLibrary\bin\Debug\SocketLibrary.pdb
+E:\Socket\SocketLibrary\obj\Debug\SocketLibrary.dll
+E:\Socket\SocketLibrary\obj\Debug\SocketLibrary.pdb
+E:\Socket\SocketLibrary\obj\Debug\SocketLibrary.csprojResolveAssemblyReference.cache

@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketLibrary", "SocketLibrary\SocketLibrary.csproj", "{07A4914F-37B5-48A5-9BFF-F4476548C5DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketClientTest", "SocketClientTest\SocketClientTest.csproj", "{D53B2809-45CC-4F6D-9BDB-4FC9876E018D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServerTest", "SocketServerTest\SocketServerTest.csproj", "{E3E1E354-3622-43AD-9F91-D90C085A6346}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://harbour9354.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SocketClientTest\\SocketClientTest.csproj
+		SccProjectName1 = SocketClientTest
+		SccLocalPath1 = SocketClientTest
+		SccProjectUniqueName2 = SocketLibrary\\SocketLibrary.csproj
+		SccProjectName2 = SocketLibrary
+		SccLocalPath2 = SocketLibrary
+		SccProjectUniqueName3 = SocketServerTest\\SocketServerTest.csproj
+		SccProjectName3 = SocketServerTest
+		SccLocalPath3 = SocketServerTest
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07A4914F-37B5-48A5-9BFF-F4476548C5DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07A4914F-37B5-48A5-9BFF-F4476548C5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07A4914F-37B5-48A5-9BFF-F4476548C5DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A4914F-37B5-48A5-9BFF-F4476548C5DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53B2809-45CC-4F6D-9BDB-4FC9876E018D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53B2809-45CC-4F6D-9BDB-4FC9876E018D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53B2809-45CC-4F6D-9BDB-4FC9876E018D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53B2809-45CC-4F6D-9BDB-4FC9876E018D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E1E354-3622-43AD-9F91-D90C085A6346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E1E354-3622-43AD-9F91-D90C085A6346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E1E354-3622-43AD-9F91-D90C085A6346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E1E354-3622-43AD-9F91-D90C085A6346}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
