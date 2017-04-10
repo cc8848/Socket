@@ -1,8 +1,0 @@
-E:\Socket\SocketClientTest\bin\Debug\SocketClientTest.exe.config
-E:\Socket\SocketClientTest\bin\Debug\SocketClientTest.exe
-E:\Socket\SocketClientTest\bin\Debug\SocketClientTest.pdb
-E:\Socket\SocketClientTest\bin\Debug\SocketLibrary.dll
-E:\Socket\SocketClientTest\bin\Debug\SocketLibrary.pdb
-E:\Socket\SocketClientTest\obj\Debug\SocketClientTest.csprojResolveAssemblyReference.cache
-E:\Socket\SocketClientTest\obj\Debug\SocketClientTest.exe
-E:\Socket\SocketClientTest\obj\Debug\SocketClientTest.pdb
