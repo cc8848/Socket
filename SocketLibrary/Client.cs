@@ -18,14 +18,11 @@ namespace SocketLibrary
         private IPAddress ipAddress;
         private int port;
         protected Thread _listenningClientThread;
-        private string _clientName;
+
         /// <summary>
         /// 连接的Key
         /// </summary>
-        public string ClientName
-        {
-            get { return _clientName; }
-        }
+        public string ClientName { get; }
 
         /// <summary>
         /// 初始化
@@ -45,7 +42,7 @@ namespace SocketLibrary
         {
             this.ipAddress = ipaddress;
             this.port = port;
-            this._clientName = ipAddress + ":" + port;
+            this.ClientName = ipAddress + ":" + port;
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace SocketLibrary
         {
             while (true)
             {
-                if (!this.Connections.ContainsKey(this._clientName))
+                if (!this.Connections.ContainsKey(this.ClientName))
                 {
                     try
                     {
@@ -79,7 +76,7 @@ namespace SocketLibrary
                         client.SendTimeout = CONNECTTIMEOUT;
                         client.ReceiveTimeout = CONNECTTIMEOUT;
                         client.Connect(ipAddress, port);
-                        this._connections.TryAdd(this._clientName, new Connection(client, this._clientName));
+                        this._connections.TryAdd(this.ClientName, new Connection(client, this.ClientName));
                     }
                     catch (Exception e)
                     { //定义连接失败事件

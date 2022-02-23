@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace SocketServerTest
         static SocketLibrary.Server _server;
         static void Main(string[] args)
         {
-            _server = new SocketLibrary.Server("192.168.3.150", 8088);
+            _server = new SocketLibrary.Server(IPAddress.Any, 8088);
             _server.MessageReceived += _server_MessageReceived;
             _server.Connected += _server_Connected;
             _server.ConnectionClose += _server_ConnectionClose;
@@ -47,23 +48,25 @@ namespace SocketServerTest
         private static void SendMsg()
         {
             i += 1;
-            SocketLibrary.Connection connection = null;
+            // SocketLibrary.Connection connection = null;
             foreach (var keyValue in _server.Connections)
             {
-                if ("192.168.3.150".Equals(keyValue.Value.NickName))
-                {
-                    connection = keyValue.Value;
-                }
-            }
-            if (connection != null)
-            {
+                // if ("192.168.3.150".Equals(keyValue.Value.NickName))
+                // {
+                //     connection = keyValue.Value;
+                // }
                 SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, i + "服务端发送消息体");
-                connection.messageQueue.Enqueue(message);
+                keyValue.Value .messageQueue.Enqueue(message);
             }
-            else
-            {
-                Console.WriteLine("发送失败！");
-            }
+            // if (connection != null)
+            // {
+            //     SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, i + "服务端发送消息体");
+            //     connection.messageQueue.Enqueue(message);
+            // }
+            // else
+            // {
+            //     Console.WriteLine("发送失败！");
+            // }
         }
 
     }

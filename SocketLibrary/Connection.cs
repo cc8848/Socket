@@ -12,52 +12,30 @@ namespace SocketLibrary
     {
         #region 属性
 
-        private NetworkStream _networkStream;
         /// <summary>
         ///  提供用于网络访问的基础数据流
         /// </summary>
-        public NetworkStream NetworkStream
-        {
-            get { return _networkStream; }
-            private set { _networkStream = value; }
-        }
-        private string _connectionName;
+        public NetworkStream NetworkStream { get; private set; }
+
         /// <summary>
         /// 连接的Key
         /// </summary>
-        public string ConnectionName
-        {
-            get { return _connectionName; }
-            private set { _connectionName = value; }
-        }
-        private string _nickName;
+        public string ConnectionName { get; private set; }
+
         /// <summary>
         /// 连接别名
         /// </summary>
-        public string NickName
-        {
-            get { return _nickName; }
-            set { _nickName = value; }
-        }
+        public string NickName { get; set; }
+
         /// <summary>
         /// 此链接的消息队列
         /// </summary>
-        public ConcurrentQueue<Message> messageQueue
-        {
-            get { return _messageQueue; }
-            private set { _messageQueue = value; }
-        }
-        protected ConcurrentQueue<Message> _messageQueue;
+        public ConcurrentQueue<Message> messageQueue { get; protected set; }
 
-        private TcpClient _tcpClient;
         /// <summary>
         /// TcpClient
         /// </summary>
-        public TcpClient TcpClient
-        {
-            get { return _tcpClient; }
-            private set { _tcpClient = value; }
-        }
+        public TcpClient TcpClient { get; private set; }
 
         #endregion
 
@@ -68,11 +46,11 @@ namespace SocketLibrary
         /// <param name="connectionName">连接名</param>
         public Connection(TcpClient tcpClient, string connectionName)
         {
-            this._tcpClient = tcpClient;
-            this._connectionName = connectionName;
-            this.NickName = this._connectionName.Split(':')[0];
-            this._networkStream = this._tcpClient.GetStream();
-            this._messageQueue = new ConcurrentQueue<Message>();
+            this.TcpClient = tcpClient;
+            this.ConnectionName = connectionName;
+            this.NickName = this.ConnectionName.Split(':')[0];
+            this.NetworkStream = this.TcpClient.GetStream();
+            this.messageQueue = new ConcurrentQueue<Message>();
         }
 
         /// <summary>
@@ -80,9 +58,9 @@ namespace SocketLibrary
         /// </summary>
         public void Stop()
         {
-            _tcpClient.Client.Disconnect(false);
-            _networkStream.Close();
-            _tcpClient.Close();
+            TcpClient.Client.Disconnect(false);
+            NetworkStream.Close();
+            TcpClient.Close();
         }
 
         /// <summary>
@@ -94,9 +72,9 @@ namespace SocketLibrary
             Message message = new Message();
             //先读出前四个字节，即Message长度
             byte[] buffer = new byte[4];
-            if (this._networkStream.DataAvailable)
+            if (this.NetworkStream.DataAvailable)
             {
-                int count = this._networkStream.Read(buffer, 0, 4);
+                int count = this.NetworkStream.Read(buffer, 0, 4);
                 if (count == 4)
                 {
                     message.MessageLength = BitConverter.ToInt32(buffer, 0);
@@ -108,9 +86,9 @@ namespace SocketLibrary
                 throw new Exception("目前网络不可读");
             //读出消息的其它字节
             buffer = new byte[message.MessageLength - 4];
-            if (this._networkStream.DataAvailable)
+            if (this.NetworkStream.DataAvailable)
             {
-                int count = this._networkStream.Read(buffer, 0, buffer.Length);
+                int count = this.NetworkStream.Read(buffer, 0, buffer.Length);
                 if (count == message.MessageLength - 4)
                 {
                     message.Command = (Message.CommandType)buffer[0];
@@ -119,7 +97,7 @@ namespace SocketLibrary
 
                     //读出消息体
                     message.MessageBody = SocketFactory.DefaultEncoding.GetString(buffer, 3, buffer.Length - 3);
-                    message.ConnectionName = this._connectionName;
+                    message.ConnectionName = this.ConnectionName;
 
                     return message;
                 }

@@ -16,8 +16,8 @@ namespace SocketLibrary
         /// </summary>
         public ConcurrentDictionary<string, Connection> Connections
         {
-            get { return _connections; }
-            protected set { _connections = value; }
+            get => _connections;
+            protected set => _connections = value;
         }
         protected ConcurrentDictionary<string, Connection> _connections;
 

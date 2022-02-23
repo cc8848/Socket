@@ -17,8 +17,9 @@ namespace SocketLibrary
         /// <summary>
         /// 默监听所有IP的此端口
         /// </summary>
+        /// <param name="address"></param>
         /// <param name="port">端口号</param>
-        public Server(int port)
+        public Server( int port)
         {
             this.ipAddress = IPAddress.Any;
             this.port = port;
@@ -31,6 +32,10 @@ namespace SocketLibrary
         public Server(string ip, int port)
         {
             this.ipAddress = IPAddress.Parse(ip);
+            this.port = port;
+        }  public Server(IPAddress address, int port)
+        {
+            this.ipAddress = address;
             this.port = port;
         }
 

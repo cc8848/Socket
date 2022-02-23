@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace SocketClientTest
         static SocketLibrary.Client client;
         static void Main(string[] args)
         {
-            client = new SocketLibrary.Client("192.168.3.150", 8088);//此处输入自己的计算机IP地址，端口不能改变
+            client = new SocketLibrary.Client("127.0.0.1", 8088);//此处输入自己的计算机IP地址，端口不能改变
             client.MessageReceived += _client_MessageReceived;
             client.MessageSent += client_MessageSent;
             client.StartClient();
