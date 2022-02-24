@@ -14,39 +14,33 @@ namespace SocketLibrary
         /// <summary>
         /// 已连接的Socket
         /// </summary>
-        public ConcurrentDictionary<string, Connection> Connections
-        {
-            get => _connections;
-            protected set => _connections = value;
-        }
-        protected ConcurrentDictionary<string, Connection> _connections;
+        public ConcurrentDictionary<string, Connection> Connections { get; protected set; }
 
         #endregion
 
         protected SocketBase()
         {
-            this._connections = new ConcurrentDictionary<string, Connection>();
+            this.Connections = new ConcurrentDictionary<string, Connection>();
         }
 
-        protected Thread _listenningthread;
+        protected Thread Listenningthread;
 
         protected void StartListenAndSend()
         {
-            _listenningthread = new Thread(new ThreadStart(Listenning));
-            _listenningthread.Start();
+            Listenningthread = new Thread(new ThreadStart(Listenning));
+            Listenningthread.Start();
         }
 
         protected void EndListenAndSend()
         {
 
             Thread.Sleep(200);//以防消息没有发完，或收完
-            foreach (var keyValue in this._connections)
+            foreach (var keyValue in this.Connections)
             {
-                Connection remConn;
-                this._connections.TryRemove(keyValue.Key, out remConn);
+                this.Connections.TryRemove(keyValue.Key, out var remConn);
                 remConn.Stop();
             }
-            _listenningthread.Abort();
+            Listenningthread.Abort();
         }
 
         protected virtual void Listenning()
@@ -54,14 +48,13 @@ namespace SocketLibrary
             while (true)
             {
                 Thread.Sleep(200);
-                foreach (var keyValue in this._connections)
+                foreach (var keyValue in this.Connections)
                 {
                     //心跳检测
 
                     if (!this.HeartbeatCheck(keyValue.Value))
                     {
-                        Connection remConn;
-                        this._connections.TryRemove(keyValue.Key, out remConn);
+                        this.Connections.TryRemove(keyValue.Key, out _);
                         continue;
                     }
                     try
@@ -182,8 +175,10 @@ namespace SocketLibrary
         }
         #endregion
 
-        #region Message事件
 
+
+
+        #region Message事件
         public class MessageEventArgs : EventArgs
         {
             public Message Message;

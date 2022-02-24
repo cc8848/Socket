@@ -65,7 +65,7 @@ namespace SocketLibrary
                         TcpClient client = _listener.AcceptTcpClient();
                         string piEndPoint = client.Client.RemoteEndPoint.ToString();
                         Connection connection = new Connection(client, piEndPoint);
-                        this._connections.TryAdd(piEndPoint, connection);
+                        this.Connections.TryAdd(piEndPoint, connection);
                         this.OnConnected(this, connection);
                     }
                     Thread.Sleep(200);

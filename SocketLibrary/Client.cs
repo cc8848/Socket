@@ -76,7 +76,9 @@ namespace SocketLibrary
                         client.SendTimeout = CONNECTTIMEOUT;
                         client.ReceiveTimeout = CONNECTTIMEOUT;
                         client.Connect(ipAddress, port);
-                        this._connections.TryAdd(this.ClientName, new Connection(client, this.ClientName));
+                        var connection = new Connection(client, this.ClientName);
+                        this.Connections.TryAdd(this.ClientName, connection);
+                        this.OnConnected(this, connection);
                     }
                     catch (Exception e)
                     { //定义连接失败事件

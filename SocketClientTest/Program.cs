@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using SocketLibrary;
 
 namespace SocketClientTest
 {
@@ -15,12 +16,24 @@ namespace SocketClientTest
             client = new SocketLibrary.Client("127.0.0.1", 8088);//此处输入自己的计算机IP地址，端口不能改变
             client.MessageReceived += _client_MessageReceived;
             client.MessageSent += client_MessageSent;
+            client.Connected+= ClientOnConnected;
+            client.ConnectionClose += ClientOnConnectionClose;
             client.StartClient();
             while (true)
             {
                 System.Threading.Thread.Sleep(200);
                 sendMsg();
             }
+        }
+
+        private static void ClientOnConnectionClose(object sender, SocketBase.ConCloseMessagesEventArgs e)
+        {
+           Console.WriteLine("ClientOnConnectionClose  "+e.ConnectionName);
+        }
+
+        private static void ClientOnConnected(object sender, Connection e)
+        {
+            Console.WriteLine("ClientOnConnected  " + e.ConnectionName);
         }
 
         private static void client_MessageSent(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
@@ -35,8 +48,7 @@ namespace SocketClientTest
         }
         private static void sendMsg()
         {
-            SocketLibrary.Connection connection;
-            client.Connections.TryGetValue(client.ClientName, out connection);
+            client.Connections.TryGetValue(client.ClientName, out var connection);
             if (connection != null)
             {
                 SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, "消息体");
