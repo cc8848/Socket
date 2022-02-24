@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>ccSocket</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>cc8848,zh3305</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://github.com/zh3305/Socket</projectUrl>
+    <description>基于Tcp的Socket，实现客户端短线重连，服务端断线重连，保持长连接。</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>Tag1 Tag2</tags>
+  </metadata>
+</package>
