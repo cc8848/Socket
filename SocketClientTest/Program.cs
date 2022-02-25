@@ -13,7 +13,7 @@ namespace SocketClientTest
         static SocketLibrary.Client client;
         static void Main(string[] args)
         {
-            client = new SocketLibrary.Client("127.0.0.1", 8088);//此处输入自己的计算机IP地址，端口不能改变
+            client = new SocketLibrary.Client("127.0.0.1", 8878);//此处输入自己的计算机IP地址，端口不能改变
             client.MessageReceived += _client_MessageReceived;
             client.MessageSent += client_MessageSent;
             client.Connected+= ClientOnConnected;
@@ -36,22 +36,28 @@ namespace SocketClientTest
             Console.WriteLine("ClientOnConnected  " + e.ConnectionName);
         }
 
-        private static void client_MessageSent(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
+        private static Task client_MessageSent(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
         {
-            Console.WriteLine(e.Connecction.ConnectionName + "发送成功");
+            return Task.CompletedTask;
+            // Console.WriteLine(e.Connecction.ConnectionName + "");
         }
-        private static void _client_MessageReceived(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
+        private static  Task _client_MessageReceived(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
         {
             string msg = e.Message.MessageBody;
 
-            Console.WriteLine(e.Connecction.ConnectionName + msg + ":发送成功");
+            Console.WriteLine(e.Connecction.ConnectionName + msg + ":Received");
+            return  Task.CompletedTask;
         }
+
+        private static int conunt = 1;
         private static void sendMsg()
         {
+            conunt++;
+            Console.WriteLine(conunt);
             client.Connections.TryGetValue(client.ClientName, out var connection);
             if (connection != null)
             {
-                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, "消息体");
+                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, "消消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体息体"+ conunt);
                 connection.messageQueue.Enqueue(message);
             }
             else

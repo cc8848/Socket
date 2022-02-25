@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace SocketLibrary
 {
@@ -36,6 +37,10 @@ namespace SocketLibrary
         /// TcpClient
         /// </summary>
         public TcpClient TcpClient { get; private set; }
+        /// <summary>
+        /// 最后一次发送数据包时间
+        /// </summary>
+        public DateTime LastSendTime { get; set; }=DateTime.Now;
 
         #endregion
 
@@ -67,14 +72,14 @@ namespace SocketLibrary
         /// 解析消息
         /// </summary>
         /// <returns></returns>
-        public Message Parse()
+        public async Task< Message> Parse()
         {
             Message message = new Message();
             //先读出前四个字节，即Message长度
             byte[] buffer = new byte[4];
             if (this.NetworkStream.DataAvailable)
             {
-                int count = this.NetworkStream.Read(buffer, 0, 4);
+                int count = await this.NetworkStream.ReadAsync(buffer, 0, 4);
                 if (count == 4)
                 {
                     message.MessageLength = BitConverter.ToInt32(buffer, 0);
@@ -88,7 +93,7 @@ namespace SocketLibrary
             buffer = new byte[message.MessageLength - 4];
             if (this.NetworkStream.DataAvailable)
             {
-                int count = this.NetworkStream.Read(buffer, 0, buffer.Length);
+                int count = await this.NetworkStream.ReadAsync(buffer, 0, buffer.Length);
                 if (count == message.MessageLength - 4)
                 {
                     message.Command = (Message.CommandType)buffer[0];

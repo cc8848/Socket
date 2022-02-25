@@ -14,7 +14,7 @@ namespace SocketServerTest
         static SocketLibrary.Server _server;
         static void Main(string[] args)
         {
-            _server = new SocketLibrary.Server(IPAddress.Any, 8088);
+            _server = new SocketLibrary.Server(IPAddress.Any, 8878);
             _server.MessageReceived += _server_MessageReceived;
             _server.Connected += _server_Connected;
             _server.ConnectionClose += _server_ConnectionClose;
@@ -26,26 +26,28 @@ namespace SocketServerTest
             }
         }
 
-        static void _server_MessageSent(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
+        static Task _server_MessageSent(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
         {
             Console.WriteLine(e.Connecction.ConnectionName + "服务端发送成功");
+            return Task.CompletedTask;
         }
         private static void _server_ConnectionClose(object sender, SocketLibrary.SocketBase.ConCloseMessagesEventArgs e)
         {
             Console.WriteLine(e.ConnectionName + "连接关闭");
+            
         }
         private static void _server_Connected(object sender, SocketLibrary.Connection e)
         {
             Console.WriteLine(e.ConnectionName + "连接成功");
         }
-        private static void _server_MessageReceived(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
+        private static async Task _server_MessageReceived(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
         {
             string ss = e.Message.MessageBody;
             Console.WriteLine(ss);
-            SendMsg();
+            SendMsg(ss);
         }
 
-        private static void SendMsg()
+        private static void SendMsg(string ss)
         {
             i += 1;
             // SocketLibrary.Connection connection = null;
@@ -55,7 +57,7 @@ namespace SocketServerTest
                 // {
                 //     connection = keyValue.Value;
                 // }
-                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, i + "服务端发送消息体");
+                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, i + ss);
                 keyValue.Value .messageQueue.Enqueue(message);
             }
             // if (connection != null)
