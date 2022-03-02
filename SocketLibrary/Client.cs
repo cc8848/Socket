@@ -53,9 +53,14 @@ namespace SocketLibrary
         public void StartClient()
         {
             this.StartListenAndSend();//开启父类的监听线程
-            ListenningClientCancellationTokenSource= new CancellationTokenSource();
-            new TaskFactory(ListenningClientCancellationTokenSource.Token).StartNew(Start);
+            ListenningClientCancellationTokenSource = new CancellationTokenSource();
+            //断线重连任务
+            // new TaskFactory(ListenningClientCancellationTokenSource.Token).StartNew(Start);
+            new TaskFactory().StartNew(StartConnect);
+            ConnectionClose += Client_ConnectionClose;//断开时重新链接
         }
+
+
         /// <summary>
         /// 关闭连接并释放资源
         /// </summary>
@@ -88,6 +93,36 @@ namespace SocketLibrary
                 }
 
                 await Task.Delay(200);
+            }
+        }
+        //断线重连
+        private async Task Client_ConnectionClose(object sender, ConCloseMessagesEventArgs args)
+        {
+            await StartConnect();
+        }
+
+        private async Task StartConnect()
+        {
+            while (true)
+            {
+                try
+                {
+                    client = new TcpClient();
+                    client.SendTimeout = CONNECTTIMEOUT;
+                    client.ReceiveTimeout = CONNECTTIMEOUT;
+                    await client.ConnectAsync(ipAddress, port);
+                    var connection = new Connection(client, this.ClientName)
+                    {
+                        LastSendTime = DateTime.Now
+                    };
+                    this.Connections.TryAdd(this.ClientName, connection);
+                    this.OnConnected(this, connection);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    await Task.Delay(500);
+                }
             }
         }
     }

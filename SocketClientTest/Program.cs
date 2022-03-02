@@ -21,12 +21,12 @@ namespace SocketClientTest
             client.StartClient();
             while (true)
             {
-                System.Threading.Thread.Sleep(200);
+                System.Threading.Thread.Sleep(1);
                 sendMsg();
             }
         }
 
-        private static void ClientOnConnectionClose(object sender, SocketBase.ConCloseMessagesEventArgs e)
+        private static async Task ClientOnConnectionClose(object sender, SocketBase.ConCloseMessagesEventArgs e)
         {
            Console.WriteLine("ClientOnConnectionClose  "+e.ConnectionName);
         }
@@ -45,7 +45,7 @@ namespace SocketClientTest
         {
             string msg = e.Message.MessageBody;
 
-            Console.WriteLine(e.Connecction.ConnectionName + msg + ":Received");
+            Console.WriteLine(e.Connecction.ConnectionName + msg +$"\t Received FileTime: {DateTime.Now.ToFileTime()}");
             return  Task.CompletedTask;
         }
 
@@ -53,11 +53,11 @@ namespace SocketClientTest
         private static void sendMsg()
         {
             conunt++;
-            Console.WriteLine(conunt);
+            Console.WriteLine("send Index:"+conunt);
             client.Connections.TryGetValue(client.ClientName, out var connection);
             if (connection != null)
             {
-                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, "消消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体消息体息体"+ conunt);
+                SocketLibrary.Message message = new SocketLibrary.Message(SocketLibrary.Message.CommandType.SendMessage, $"filetime:{DateTime.Now.ToFileTime()} \t index:{conunt} " );
                 connection.messageQueue.Enqueue(message);
             }
             else

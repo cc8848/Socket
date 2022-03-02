@@ -31,7 +31,7 @@ namespace SocketServerTest
             Console.WriteLine(e.Connecction.ConnectionName + "服务端发送成功");
             return Task.CompletedTask;
         }
-        private static void _server_ConnectionClose(object sender, SocketLibrary.SocketBase.ConCloseMessagesEventArgs e)
+        private static async Task _server_ConnectionClose(object sender, SocketLibrary.SocketBase.ConCloseMessagesEventArgs e)
         {
             Console.WriteLine(e.ConnectionName + "连接关闭");
             
@@ -42,9 +42,9 @@ namespace SocketServerTest
         }
         private static async Task _server_MessageReceived(object sender, SocketLibrary.SocketBase.MessageEventArgs e)
         {
-            string ss = e.Message.MessageBody;
-            Console.WriteLine(ss);
-            SendMsg(ss);
+            var format = e.Message.MessageBody + $"\t Server FileTime: {DateTime.Now.ToFileTime()}";
+            Console.WriteLine(format);
+            SendMsg(format);
         }
 
         private static void SendMsg(string ss)

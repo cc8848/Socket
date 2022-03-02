@@ -59,10 +59,8 @@ namespace SocketLibrary
                     //心跳检测
                     if (!await this.HeartbeatCheck(keyValue.Value))
                     {
-                        this.Connections.TryRemove(keyValue.Key, out _);
                         continue;
                     }
-
 
                     try
                     {
@@ -73,7 +71,7 @@ namespace SocketLibrary
                     {
                         keyValue.Value.NetworkStream.Close();
                         ConCloseMessagesEventArgs ce = new ConCloseMessagesEventArgs(keyValue.Value.ConnectionName, new ConcurrentQueue<Message>(keyValue.Value.messageQueue), ex);
-                        this.OnConnectionClose(this, ce);
+                        await this.OnConnectionClose(this, ce);
                     }
                 }
             }
@@ -125,33 +123,33 @@ namespace SocketLibrary
                 }
             }
         }
+
         /// <summary>
         /// 心跳检测
         /// </summary>
+        /// <param name="connection"></param>
+        /// <returns>是否联通</returns>
         private async Task<bool> HeartbeatCheck(Connection connection)
         {
-            bool bol = false;
             if (connection.LastSendTime.AddMilliseconds(HeartbeatInterval * 1000) <= DateTime.Now)
             {
-                var message = new Message(Message.CommandType.Seartbeat, "心跳包，可忽略");
+                var message = new Message(Message.CommandType.Seartbeat, "心跳包");
                 try
                 {
                     await WriteAsync(connection, message);
-                    bol = true;
                 }
                 catch (Exception ex) //连接已经断开
                 {
                     connection.NetworkStream.Close();
                     ConCloseMessagesEventArgs ce = new ConCloseMessagesEventArgs(connection.ConnectionName, new ConcurrentQueue<Message>(connection.messageQueue), ex);
-                    this.OnConnectionClose(this, ce);
+                    await this.OnConnectionClose(this, ce);
+                    return false;
+
                 }
             }
-            else
-            {
-                return true;
-            }
+         
            
-            return bol;
+            return true;
         }
 
         #endregion
@@ -169,15 +167,16 @@ namespace SocketLibrary
                 this.Exception = exception;
             }
         }
-        public delegate void ConCloseMessagesHandler(object sender, ConCloseMessagesEventArgs e);
+        public delegate Task ConCloseMessagesHandler(object sender, ConCloseMessagesEventArgs e);
         /// <summary>
         /// 连接关闭事件
         /// </summary>
         public event ConCloseMessagesHandler ConnectionClose;
-        private void OnConnectionClose(object sender, ConCloseMessagesEventArgs e)
+        private async Task OnConnectionClose(object sender, ConCloseMessagesEventArgs e)
         {
+            this.Connections.TryRemove(e.ConnectionName, out _);
             if (ConnectionClose != null)
-                this.ConnectionClose(sender, e);
+               await this.ConnectionClose(sender, e);
         }
         #endregion
 
