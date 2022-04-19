@@ -6,6 +6,6 @@ namespace SocketLibrary
     /// </summary>
     public class SocketFactory
     {
-        public static Encoding DefaultEncoding = Encoding.GetEncoding("GB2312");
+        public static Encoding DefaultEncoding = Encoding.UTF8;
     }
 }

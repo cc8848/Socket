@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SocketLibrary
 {
@@ -17,15 +18,13 @@ namespace SocketLibrary
         private TcpClient client;
         private IPAddress ipAddress;
         private int port;
-        protected Thread _listenningClientThread;
-        private string _clientName;
+        // protected Thread _listenningClientThread;
+        protected CancellationTokenSource ListenningClientCancellationTokenSource;
+
         /// <summary>
         /// 连接的Key
         /// </summary>
-        public string ClientName
-        {
-            get { return _clientName; }
-        }
+        public string ClientName { get; }
 
         /// <summary>
         /// 初始化
@@ -45,7 +44,7 @@ namespace SocketLibrary
         {
             this.ipAddress = ipaddress;
             this.port = port;
-            this._clientName = ipAddress + ":" + port;
+            this.ClientName = ipAddress + ":" + port;
         }
 
         /// <summary>
@@ -54,38 +53,76 @@ namespace SocketLibrary
         public void StartClient()
         {
             this.StartListenAndSend();//开启父类的监听线程
-            _listenningClientThread = new Thread(new ThreadStart(Start));
-            _listenningClientThread.Start();
+            ListenningClientCancellationTokenSource = new CancellationTokenSource();
+            //断线重连任务
+            // new TaskFactory(ListenningClientCancellationTokenSource.Token).StartNew(Start);
+            new TaskFactory().StartNew(StartConnect);
+            ConnectionClose += Client_ConnectionClose;//断开时重新链接
         }
+
+
         /// <summary>
         /// 关闭连接并释放资源
         /// </summary>
         public void StopClient()
         {
             //缺少通知给服务端 自己主动关闭了
-            _listenningClientThread.Abort();
+            ListenningClientCancellationTokenSource.Cancel(false);
             this.EndListenAndSend();
         }
-
-        private void Start()
+        //循环检查链接状态,如果断开重新链接
+        private async Task Start()
         {
             while (true)
             {
-                if (!this.Connections.ContainsKey(this._clientName))
+                if (!this.Connections.ContainsKey(this.ClientName))
                 {
                     try
                     {
                         client = new TcpClient();
                         client.SendTimeout = CONNECTTIMEOUT;
                         client.ReceiveTimeout = CONNECTTIMEOUT;
-                        client.Connect(ipAddress, port);
-                        this._connections.TryAdd(this._clientName, new Connection(client, this._clientName));
+                        await client.ConnectAsync(ipAddress, port);
+                        var connection = new Connection(client, this.ClientName);
+                        this.Connections.TryAdd(this.ClientName, connection);
+                        this.OnConnected(this, connection);
                     }
                     catch (Exception e)
                     { //定义连接失败事件
                     }
                 }
-                Thread.Sleep(200);
+
+                await Task.Delay(200);
+            }
+        }
+        //断线重连
+        private async Task Client_ConnectionClose(object sender, ConCloseMessagesEventArgs args)
+        {
+            await StartConnect();
+        }
+
+        private async Task StartConnect()
+        {
+            while (true)
+            {
+                try
+                {
+                    client = new TcpClient();
+                    client.SendTimeout = CONNECTTIMEOUT;
+                    client.ReceiveTimeout = CONNECTTIMEOUT;
+                    await client.ConnectAsync(ipAddress, port);
+                    var connection = new Connection(client, this.ClientName)
+                    {
+                        LastSendTime = DateTime.Now
+                    };
+                    this.Connections.TryAdd(this.ClientName, connection);
+                    this.OnConnected(this, connection);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    await Task.Delay(500);
+                }
             }
         }
     }

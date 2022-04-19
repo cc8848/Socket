@@ -49,7 +49,7 @@ namespace SocketLibrary
         /// </summary>
         public bool Sent;
 
-        
+
         public Message()
         {
             ConnectionName = null;
